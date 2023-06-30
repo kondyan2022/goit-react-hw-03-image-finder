@@ -1,12 +1,12 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 import { GalleryItem, GalleryItemImage } from './ImageGalleryItems.styled';
 
 class ImageGalleryItem extends Component {
   componentDidMount() {
-    this.props.setLoader(true);
+    this.props.setLoader(1);
   }
   handleClick = evt => {
-    console.log('click Image');
     this.props.imageClick({
       largeImageURL: this.props.largeImageURL,
       tags: this.props.tags,
@@ -22,7 +22,7 @@ class ImageGalleryItem extends Component {
           alt={tags}
           onClick={this.handleClick}
           onLoad={() => {
-            this.props.setLoader(false);
+            this.props.setLoader(-1);
           }}
         />
       </GalleryItem>
@@ -30,3 +30,11 @@ class ImageGalleryItem extends Component {
   }
 }
 export default ImageGalleryItem;
+ImageGalleryItem.propTypes = {
+  id: PropTypes.number,
+  largeImageURL: PropTypes.string,
+  webformatURL: PropTypes.string,
+  tags: PropTypes.string,
+  imageClick: PropTypes.func,
+  setLoader: PropTypes.func,
+};

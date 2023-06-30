@@ -4,14 +4,15 @@ import ImageGallery from './ImageGallery/ImageGallery';
 import Modal from './Modal/modal';
 import AppWrapper from './App.styled';
 import Loader from './Loader/Loader';
+import Message from './Message/Message';
 
 export class App extends Component {
   state = {
-    query: '',
+    query: null,
     needClear: false,
     modal: null,
     loadingCount: 0,
-    loadingSet: new Set(),
+    error: false,
   };
 
   componentDidUpdate() {
@@ -35,25 +36,27 @@ export class App extends Component {
     this.setState({ modal: null });
   };
 
-  setLoader = flag => {
+  setLoader = delta => {
     this.setState(prevState => ({
-      loadingCount: flag
-        ? prevState.loadingCount + 1
-        : prevState.loadingCount - 1,
+      loadingCount: delta === 0 ? 0 : prevState.loadingCount + delta,
     }));
   };
 
+  setError = flag => {
+    this.setState({ error: flag });
+  };
+
   render() {
-    console.log('render App');
     return (
-      <AppWrapper>
+      <AppWrapper modal={this.state.modal && true}>
         <Searchbar onSubmit={this.handleSubmit} />
 
-        {this.state.query && !this.state.needClear && (
+        {this.state.query && !this.state.needClear && !this.state.error && (
           <ImageGallery
             query={this.state.query}
             imageClick={this.handleImageClick}
             setLoader={this.setLoader}
+            setError={this.setError}
           />
         )}
         {this.state.modal && (
@@ -65,6 +68,12 @@ export class App extends Component {
           />
         )}
         {this.state.loadingCount > 0 && <Loader />}
+        {this.state.query === '' && (
+          <Message>Please, input key words for search. </Message>
+        )}
+        {this.state.error && (
+          <Message>Internet connection error. Please, try later! </Message>
+        )}
       </AppWrapper>
     );
   }

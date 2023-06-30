@@ -1,6 +1,6 @@
 import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Component } from 'react';
-
+import PropTypes from 'prop-types';
 import fetchImages from 'components/utils/pixabay-api';
 import Button from 'components/Button/Button';
 import Gallery from './ImageGallery.styled';
@@ -15,7 +15,8 @@ class ImageGallery extends Component {
   };
 
   componentDidMount() {
-    this.props.setLoader(true);
+    this.props.setError(false);
+    this.props.setLoader(1);
     fetchImages(this.props.query, 1)
       .then(response => {
         this.setState({
@@ -32,13 +33,15 @@ class ImageGallery extends Component {
           ),
         });
       })
-      .catch(error => console.log(error))
-      .finally(this.props.setLoader(false));
+      .catch(error => {
+        this.props.setError(true);
+      })
+      .finally(this.props.setLoader(-1));
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.page > prevState.page) {
-      this.props.setLoader(true);
+      this.props.setLoader(1);
       fetchImages(this.props.query, this.state.page)
         .then(response => {
           this.setState({
@@ -55,8 +58,10 @@ class ImageGallery extends Component {
             ],
           });
         })
-        .catch(error => console.log(error))
-        .finally(this.props.setLoader(false));
+        .catch(error => {
+          this.props.setError(true);
+        })
+        .finally(this.props.setLoader(-1));
     }
   }
 
@@ -69,7 +74,7 @@ class ImageGallery extends Component {
   render() {
     return (
       <>
-        <Gallery className="gallery">
+        <Gallery>
           {this.state.galleryItems.map(
             ({ id, webformatURL, largeImageURL, tags }) => (
               <ImageGalleryItem
@@ -91,3 +96,9 @@ class ImageGallery extends Component {
 }
 
 export default ImageGallery;
+ImageGallery.propTypes = {
+  query: PropTypes.string.isRequired,
+  imageClick: PropTypes.func,
+  setLoader: PropTypes.func,
+  setError: PropTypes.func,
+};

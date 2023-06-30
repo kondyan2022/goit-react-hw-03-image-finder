@@ -1,16 +1,20 @@
 import { Component } from 'react';
 import { createPortal } from 'react-dom';
+import PropTypes from 'prop-types';
 import { ModalForm, ModalOverlay } from './modal.styled';
+import { disablePageScroll, enablePageScroll } from 'scroll-lock';
 
 const modalRoot = document.querySelector('#modal-root');
 
 export default class Modal extends Component {
   componentDidMount() {
-    this.props.setLoader(true);
+    this.props.setLoader(1);
     document.addEventListener('keydown', this.handleKeyDown);
+    disablePageScroll();
   }
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown);
+    enablePageScroll();
   }
 
   handleKeyDown = evt => {
@@ -26,14 +30,15 @@ export default class Modal extends Component {
   };
 
   render() {
+    const { largeImageURL, tags, setLoader } = this.props;
     return createPortal(
-      <ModalOverlay className="overlay" onClick={this.handleBackdropClick}>
-        <ModalForm className="modal">
+      <ModalOverlay onClick={this.handleBackdropClick}>
+        <ModalForm>
           <img
-            src={this.props.largeImageURL}
-            alt={this.props.tags}
+            src={largeImageURL}
+            alt={tags}
             onLoad={() => {
-              this.props.setLoader(false);
+              setLoader(-1);
             }}
           />
         </ModalForm>
@@ -42,3 +47,9 @@ export default class Modal extends Component {
     );
   }
 }
+Modal.propTypes = {
+  largeImageURL: PropTypes.string.isRequired,
+  tags: PropTypes.string,
+  setLoader: PropTypes.func,
+  closeModal: PropTypes.func,
+};
