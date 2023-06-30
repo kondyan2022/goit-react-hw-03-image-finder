@@ -4,11 +4,12 @@ import PropTypes from 'prop-types';
 import fetchImages from 'components/utils/pixabay-api';
 import Button from 'components/Button/Button';
 import Gallery from './ImageGallery.styled';
+import Message from 'components/Message/Message';
 
 class ImageGallery extends Component {
   state = {
     page: 1,
-    totalHits: 0,
+    totalHits: 1,
     per_page: 12,
     showMore: false,
     galleryItems: [],
@@ -21,6 +22,7 @@ class ImageGallery extends Component {
       .then(response => {
         this.setState({
           page: 1,
+
           totalHits: response.data.totalHits,
           showMore: response.data.totalHits > this.state.per_page,
           galleryItems: response.data.hits.map(
@@ -89,6 +91,9 @@ class ImageGallery extends Component {
             )
           )}
         </Gallery>
+        {this.state.totalHits === 0 && (
+          <Message>`No matches for "{this.state.query}" `</Message>
+        )}
         {this.state.showMore && <Button onClick={this.handleButtonClick} />}
       </>
     );
