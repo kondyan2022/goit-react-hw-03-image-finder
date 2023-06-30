@@ -48,7 +48,7 @@ export class App extends Component {
 
   render() {
     return (
-      <AppWrapper modal={this.state.modal && true}>
+      <AppWrapper>
         <Searchbar onSubmit={this.handleSubmit} />
 
         {this.state.query && !this.state.needClear && !this.state.error && (

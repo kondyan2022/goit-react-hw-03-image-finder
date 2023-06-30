@@ -22,7 +22,6 @@ class ImageGallery extends Component {
       .then(response => {
         this.setState({
           page: 1,
-
           totalHits: response.data.totalHits,
           showMore: response.data.totalHits > this.state.per_page,
           galleryItems: response.data.hits.map(
