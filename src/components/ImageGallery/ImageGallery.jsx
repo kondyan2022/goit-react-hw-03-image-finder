@@ -92,7 +92,7 @@ class ImageGallery extends Component {
           )}
         </Gallery>
         {this.state.totalHits === 0 && (
-          <Message>`No matches for "{this.state.query}" `</Message>
+          <Message>{`No matches for "${this.props.query}". Try again.`}</Message>
         )}
         {this.state.showMore && <Button onClick={this.handleButtonClick} />}
       </>
