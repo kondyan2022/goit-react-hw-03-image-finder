@@ -4,9 +4,10 @@ import { GalleryItem, GalleryItemImage } from './ImageGalleryItems.styled';
 
 class ImageGalleryItem extends Component {
   componentDidMount() {
-    this.props.setLoader(1);
+    // this.props.setLoader(1);
   }
   handleClick = evt => {
+    this.props.setLoader(1);
     this.props.imageClick({
       largeImageURL: this.props.largeImageURL,
       tags: this.props.tags,

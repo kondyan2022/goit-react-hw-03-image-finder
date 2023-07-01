@@ -35,12 +35,15 @@ class ImageGallery extends Component {
             galleryItems: [
               ...prevGallery,
               ...response.data.hits.map(
-                ({ id, webformatURL, largeImageURL, tags }) => ({
-                  id,
-                  webformatURL,
-                  largeImageURL,
-                  tags,
-                })
+                ({ id, webformatURL, largeImageURL, tags }) => {
+                  this.props.setLoader(1);
+                  return {
+                    id,
+                    webformatURL,
+                    largeImageURL,
+                    tags,
+                  };
+                }
               ),
             ],
             showMore: response.data.totalHits > this.state.per_page * newPage,

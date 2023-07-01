@@ -8,7 +8,7 @@ const modalRoot = document.querySelector('#modal-root');
 
 export default class Modal extends Component {
   componentDidMount() {
-    this.props.setLoader(1);
+    // this.props.setLoader(1);
     document.addEventListener('keydown', this.handleKeyDown);
     disablePageScroll();
   }
@@ -38,6 +38,9 @@ export default class Modal extends Component {
             src={largeImageURL}
             alt={tags}
             onLoad={() => {
+              setLoader(-1);
+            }}
+            onError={() => {
               setLoader(-1);
             }}
           />
