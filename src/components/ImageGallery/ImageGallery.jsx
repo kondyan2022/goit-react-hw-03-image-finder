@@ -8,7 +8,7 @@ import Message from 'components/Message/Message';
 
 class ImageGallery extends Component {
   state = {
-    page: 1,
+    page: 0,
     totalHits: 1,
     per_page: 12,
     showMore: false,
@@ -16,38 +16,24 @@ class ImageGallery extends Component {
   };
 
   componentDidMount() {
-    this.props.setError(false);
-    this.props.setLoader(1);
-    fetchImages(this.props.query, 1)
-      .then(response => {
-        this.setState({
-          page: 1,
-          totalHits: response.data.totalHits,
-          showMore: response.data.totalHits > this.state.per_page,
-          galleryItems: response.data.hits.map(
-            ({ id, webformatURL, largeImageURL, tags }) => ({
-              id,
-              webformatURL,
-              largeImageURL,
-              tags,
-            })
-          ),
-        });
-      })
-      .catch(error => {
-        this.props.setError(true);
-      })
-      .finally(this.props.setLoader(-1));
+    this.setState({ page: 1 });
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.page > prevState.page) {
+    if (
+      this.state.page > prevState.page ||
+      this.props.query !== prevProps.query
+    ) {
+      const newPage =
+        this.props.query === prevProps.query ? this.state.page : 1;
+      const prevGallery = newPage === 1 ? [] : prevState.galleryItems;
+
       this.props.setLoader(1);
-      fetchImages(this.props.query, this.state.page)
+      fetchImages(this.props.query, newPage)
         .then(response => {
           this.setState({
             galleryItems: [
-              ...prevState.galleryItems,
+              ...prevGallery,
               ...response.data.hits.map(
                 ({ id, webformatURL, largeImageURL, tags }) => ({
                   id,
@@ -57,6 +43,9 @@ class ImageGallery extends Component {
                 })
               ),
             ],
+            showMore: response.data.totalHits > this.state.per_page * newPage,
+            totalHits: response.data.totalHits,
+            page: newPage,
           });
         })
         .catch(error => {
@@ -69,7 +58,6 @@ class ImageGallery extends Component {
   handleButtonClick = evt =>
     this.setState(prevState => ({
       page: prevState.page + 1,
-      showMore: prevState.totalHits > (prevState.page + 1) * prevState.per_page,
     }));
 
   render() {

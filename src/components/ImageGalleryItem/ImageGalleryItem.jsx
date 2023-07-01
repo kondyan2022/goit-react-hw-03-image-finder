@@ -24,6 +24,9 @@ class ImageGalleryItem extends Component {
           onLoad={() => {
             this.props.setLoader(-1);
           }}
+          onError={() => {
+            this.props.setLoader(-1);
+          }}
         />
       </GalleryItem>
     );

@@ -9,20 +9,14 @@ import Message from './Message/Message';
 export class App extends Component {
   state = {
     query: null,
-    needClear: false,
     modal: null,
     loadingCount: 0,
     error: false,
   };
 
-  componentDidUpdate() {
-    if (this.state.needClear) {
-      this.setState({ needClear: false });
-    }
-  }
   handleSubmit = values => {
     if (this.state.query !== values.query) {
-      this.setState({ ...values, needClear: true });
+      this.setState({ ...values });
     }
   };
 
@@ -51,7 +45,7 @@ export class App extends Component {
       <AppWrapper>
         <Searchbar onSubmit={this.handleSubmit} />
 
-        {this.state.query && !this.state.needClear && !this.state.error && (
+        {this.state.query && !this.state.error && (
           <ImageGallery
             query={this.state.query}
             imageClick={this.handleImageClick}
